@@ -1,0 +1,19 @@
+<table border="1">
+  {% for s in students %}
+    <tr>
+      <td>{{ s.email }}
+      </td>
+      <td>
+        <a href="{{
+        path('student_detail', {id: s.id }) }}">
+          Voir détail
+        </a>
+      </td>
+      <td>
+        <a href="{{
+            path('student_delete', {id: s.id }) }}">
+            Supprimer
+            </a> </td>
+    </tr>
+  {% endfor %}
+</table>

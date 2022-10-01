@@ -1,0 +1,16 @@
+{{ name }}
+
+<br>
+
+<img src="{{ asset('images/img1.jpg') }}" alt="">
+
+{{ classes|length }}
+<ul>
+  {% for key, classe in classes %}
+    <li>{{key}}:
+      {{ classe }}</li>
+  {% endfor %}
+</ul>
+{# commentaire #}
+
+<a href="{{ path('redirect') }}">Redirect</a>
