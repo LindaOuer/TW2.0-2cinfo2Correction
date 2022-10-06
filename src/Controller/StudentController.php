@@ -77,15 +77,13 @@ class StudentController extends AbstractController {
     }
 
     #[Route('/add', name:'student_add')]
-    public function add(ManagerRegistry $doctrine):Response{
+    // public function add(ManagerRegistry $doctrine):Response{
+        public function add(StudentRepository $repo):Response{
 
     $student = new Student();
     $student->setEmail('meriem.hjiri@esprit.tn');
 
-    $entityManger = $doctrine->getManager();
-    $entityManger->persist($student);
-
-    $entityManger->flush();
+    $repo->add($student, true);
 
     return $this->redirectToRoute('student_list');
     }
