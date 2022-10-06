@@ -67,4 +67,26 @@ class StudentController extends AbstractController {
 
     return new Response('Suppression Etudiant');
     }
+
+    #[Route('/DeleteStudent1/{id}', name:'student_delete1')]
+    public function delete1(Student $student, StudentRepository $repo):Response{
+
+    $repo->remove($student, true);
+
+    return new Response('Suppression Etudiant');
+    }
+
+    #[Route('/add', name:'student_add')]
+    public function add(ManagerRegistry $doctrine):Response{
+
+    $student = new Student();
+    $student->setEmail('meriem.hjiri@esprit.tn');
+
+    $entityManger = $doctrine->getManager();
+    $entityManger->persist($student);
+
+    $entityManger->flush();
+
+    return $this->redirectToRoute('student_list');
+    }
 }
