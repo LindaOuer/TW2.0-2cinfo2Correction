@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Student;
+use App\Form\StudentType;
 use App\Repository\StudentRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -78,13 +82,45 @@ class StudentController extends AbstractController {
 
     #[Route('/add', name:'student_add')]
     // public function add(ManagerRegistry $doctrine):Response{
-        public function add(StudentRepository $repo):Response{
+        public function add(Request $request, StudentRepository $repo):Response{
 
     $student = new Student();
-    $student->setEmail('meriem.hjiri@esprit.tn');
+    // $student->setEmail('meriem.hjiri@esprit.tn');
+    // $form = $this->createFormBuilder($student)
+    //         ->add('email', TextType::class)
+    //         ->add('submit', SubmitType::class)
+    //         ->getForm();
+        $form = $this->createForm(StudentType::class, $student);
+    $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $student = $form->getData();
+        $repo->add($student, true);
+        return $this->redirectToRoute('student_list');
+    }
+    
+    return $this->renderForm('student/add.html.twig', [
+        'f' => $form
+    ]);
 
-    $repo->add($student, true);
+    }
 
-    return $this->redirectToRoute('student_list');
+    #[Route('/update/{id}', name:'student_update')]
+    public function update(Request $request, ManagerRegistry $doctrine, $id):Response{
+    
+    $student = $doctrine->getRepository(Student::class)->find($id);
+
+    $form = $this->createForm(StudentType::class, $student);
+    $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $student = $form->getData();
+        $entityManager = $doctrine->getManager();
+        $entityManager->flush();
+
+        return $this->redirectToRoute('student_list');
+    }
+    return $this->renderForm('student/add.html.twig', [
+        'f' => $form
+    ]);
+
     }
 }
